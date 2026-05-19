@@ -1,0 +1,44 @@
+const userRepository = require('../repositories/userRepository');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+class AuthService {
+// BKAV HaiHS : xử lý đăng nhập - start 
+  async login(email, password) {
+    // 1. Gọi Repo để lấy dữ liệu từ DB
+    const user = await userRepository.findByEmail(email);
+    
+    // Nếu không có user, ném lỗi ra ngoài (Controller sẽ bắt)
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+
+    // 2. So sánh mật khẩu
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw new Error('WRONG_PASSWORD');
+    }
+
+    // 3. Tính toán logic nghiệp vụ: Hợp nhất quyền hạn
+    const groupPerms = user.groups ? user.groups.flatMap(g => g.permissions) : [];
+    const allPermissions = [...new Set([...user.permissions, ...groupPerms])];
+
+    // 4. Ký Token (Trong thực tế nhớ để JWT_SECRET trong file .env)
+    const SECRET_KEY = process.env.JWT_SECRET || 'Sieu_Mat_Ma_Cua_Toi_123';
+    const token = jwt.sign(
+      { id: user.id, email: user.email, permissions: allPermissions },
+      SECRET_KEY,
+      { expiresIn: '24h' }
+    );
+
+    // Trả kết quả sạch sẽ về cho Controller
+    return {
+      token: token,
+      user: { email: user.email, permissions: allPermissions }
+    };
+  }
+// BKAV HaiHS : xử lý đăng nhập - end 
+
+}
+
+module.exports = new AuthService();
