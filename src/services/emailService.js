@@ -6,7 +6,7 @@ class EmailService {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
-      proxy: "process.env.PROXY",
+      proxy: process.env.PROXY || null,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
