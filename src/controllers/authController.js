@@ -1,7 +1,7 @@
-const authService = require('../services/authService');
+const authService = require("../services/authService");
 
 class AuthController {
-//  BKAV HaiHS : xử lý đăng nhập - start
+  //  BKAV HaiHS : xử lý đăng nhập - start
   async login(req, res, next) {
     try {
       // 1. Lấy dữ liệu từ Client
@@ -9,7 +9,9 @@ class AuthController {
 
       // Validate cơ bản (Có thể dùng thư viện Zod sau này)
       if (!email || !password) {
-        return res.status(400).json({ message: "Vui lòng nhập đầy đủ Email và Mật khẩu" });
+        return res
+          .status(400)
+          .json({ message: "Vui lòng nhập đầy đủ Email và Mật khẩu" });
       }
 
       // 2. Giao việc cho Service
@@ -18,15 +20,39 @@ class AuthController {
       // 3. Trả Response thành công
       res.status(200).json({
         message: "Đăng nhập thành công!",
-        data: result
+        data: result,
       });
-
     } catch (error) {
       // Nếu Service ném ra lỗi, chuyển thẳng lỗi đó đến Middleware Error Handler
-      next(error); 
+      next(error);
     }
   }
-//  BKAV HaiHS : xử lý đăng nhập - end
+  //  BKAV HaiHS : xử lý đăng nhập - end
+
+  // BKAV HaiHS : xử lý đổi mật khẩu - start
+  async changePassword(req, res, next) {
+    try {
+      const { oldPassword, newPassword } = req.body;
+      const userId = req.userId; // Lấy từ Middleware authMiddleware truyền qua
+
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({
+          message: "Vui lòng nhập đầy đủ mật khẩu cũ và mật khẩu mới!",
+        });
+      }
+
+      // Giao việc cho Service xử lý nặng não
+      await authService.changePassword(userId, oldPassword, newPassword);
+
+      res.status(200).json({
+        message:
+          "Đổi mật khẩu thành công! Vui lòng dùng mật khẩu mới cho lần đăng nhập sau.",
+      });
+    } catch (error) {
+      next(error); // Đẩy lỗi ra file errorHandler
+    }
+  }
+  // BKAV HaiHS : xử lý đổi mật khẩu - end
 }
 
 module.exports = new AuthController();
