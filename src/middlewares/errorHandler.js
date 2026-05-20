@@ -21,6 +21,13 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ message: "Mật khẩu cũ không chính xác!" });
   }
 
+  // Lỗi trùng tên nhóm khi tạo nhóm mới
+  if (err.message === "GROUP_ALREADY_EXISTS") {
+    return res
+      .status(409)
+      .json({ message: "Tên nhóm này đã tồn tại trên hệ thống!" });
+  }
+
   // Các lỗi còn lại
   return res
     .status(500)
