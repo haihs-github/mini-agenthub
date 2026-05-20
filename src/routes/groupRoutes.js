@@ -20,4 +20,12 @@ router.put(
   groupController.updatePermissions,
 );
 
+// API Thêm nhiều thành viên vào nhóm (GROUP_ADD_USER):
+router.post(
+  "/:id/users",
+  authMiddleware,
+  permissionMiddleware("GROUP_ADD_USER"),
+  groupController.addUsers,
+);
+
 module.exports = router;

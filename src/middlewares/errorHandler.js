@@ -35,6 +35,16 @@ const errorHandler = (err, req, res, next) => {
       .json({ message: "Không tìm thấy Nhóm yêu cầu trên hệ thống!" });
   }
 
+  // lỗi khi thêm người dùng vào nhóm mà không cung cấp userIds hoặc userIds không phải là mảng
+  if (err.message === "USER_IDS_REQUIRED") {
+    return res
+      .status(400)
+      .json({
+        message:
+          "Vui lòng cung cấp ít nhất một ID người dùng để thêm vào nhóm!",
+      });
+  }
+
   // Các lỗi còn lại
   return res
     .status(500)

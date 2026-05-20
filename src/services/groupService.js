@@ -35,6 +35,24 @@ class GroupService {
     return updatedGroup;
   }
   //   BKAV HaiHS : xử lý cập nhật quyền cho nhóm - end
+
+  // BKAV HaiHS : xử lý thêm người dùng vào nhóm - start
+  async addUsersToGroup(groupId, userIds) {
+    // 1. Kiểm tra xem Nhóm có tồn tại thật không
+    const group = await groupRepository.findById(groupId);
+    if (!group) {
+      throw new Error("GROUP_NOT_FOUND");
+    }
+
+    // 2. Kiểm tra xem mảng userIds có rỗng không
+    if (!userIds || userIds.length === 0) {
+      throw new Error("USER_IDS_REQUIRED");
+    }
+
+    // 3. Tiến hành gán danh sách User vào Nhóm
+    return await groupRepository.addUsersToGroup(groupId, userIds);
+  }
+  // BKAV HaiHS : xử lý thêm người dùng vào nhóm - end
 }
 
 module.exports = new GroupService();

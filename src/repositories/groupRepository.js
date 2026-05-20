@@ -33,6 +33,26 @@ class GroupRepository {
     });
   }
   // BKAV HaiHS : Cập nhật mảng quyền mới cho nhóm - end
+
+  // BKAV HaiHS : Thêm người dùng vào nhóm - start
+  async addUsersToGroup(groupId, userIds) {
+    return await prisma.group.update({
+      where: { id: parseInt(groupId) },
+      data: {
+        users: {
+          // Biến mảng số [2, 3, 4] thành dạng [{ id: 2 }, { id: 3 }, { id: 4 }] đúng chuẩn Prisma
+          connect: userIds.map((id) => ({ id: parseInt(id) })),
+        },
+      },
+      // Yêu cầu trả về kèm theo danh sách thành viên sau khi cập nhật để kiểm tra
+      include: {
+        users: {
+          select: { id: true, email: true }, // Chỉ lấy id và email, không lấy password bảo mật
+        },
+      },
+    });
+  }
+  // BKAV HaiHS : Thêm người dùng vào nhóm - end
 }
 
 module.exports = new GroupRepository();
