@@ -11,9 +11,12 @@ model User {
   id            Int            @id @default(autoincrement())
   email         String         @unique
   password      String
+  fullname      String         
+  role          String         @default("viewer") 
   permissions   String[]       @default(["CHAT", "CONV_C", "CONV_R", "CONV_U", "CONV_D"]) 
   conversations Conversation[]
   groups        Group[]        @relation("UserGroups")
+  createdAt     DateTime       @default(now())
 }
 
 // Bảng 2: Nhóm
