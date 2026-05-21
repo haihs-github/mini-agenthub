@@ -21,6 +21,8 @@ async function main() {
     create: {
       email: adminEmail,
       password: hashedPassword,
+      fullname: "Super Admin",
+      role: "admin",
       permissions: [
         "USER_C",
         "USER_R",
