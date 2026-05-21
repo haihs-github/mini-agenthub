@@ -5,7 +5,7 @@ const crypto = require("crypto"); // Thư viện có sẵn của Node.js để t
 
 class UserService {
   // BKAV HaiHS : tạo người dùng mới - start
-  async createUserByAdmin(email, fullname, role, groupId) {
+  async createUserByAdmin(email, fullname, role, groupIds) {
     // 1. Kiểm tra email đã tồn tại chưa
     const existingUser = await userRepository.findByEmail(email);
     if (existingUser) throw new Error("EMAIL_ALREADY_EXISTS");
@@ -59,10 +59,11 @@ class UserService {
       permissions: computedPermissions,
     };
 
-    // NẾU CÓ TRUYỀN GROUP ID -> Thực hiện kết nối mối quan hệ Nhiều - Nhiều của Prisma
-    if (groupId) {
+    // Nếu truyền groupids
+    if (groupIds && Array.isArray(groupIds) && groupIds.length > 0) {
       userData.groups = {
-        connect: { id: parseInt(groupId) },
+        // Kết nối user với nhiều nhóm cùng lúc
+        connect: groupIds.map((id) => ({ id: parseInt(id) })),
       };
     }
 
