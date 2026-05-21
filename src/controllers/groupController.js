@@ -4,7 +4,7 @@ class GroupController {
   // BKAV HaiHS : Xử lý tao nhóm mới - start
   async createGroup(req, res, next) {
     try {
-      const { name, permissions } = req.body;
+      const { name, permissions, userIds } = req.body;
 
       // Kiểm tra dữ liệu đầu vào cơ bản
       if (!name) {
@@ -13,8 +13,23 @@ class GroupController {
           .json({ message: "Bắt buộc phải nhập tên Nhóm (name)!" });
       }
 
+      // Validate: Nếu có gửi permissions thì bắt buộc phải là mảng
+      if (permissions && !Array.isArray(permissions)) {
+        return res.status(400).json({
+          message: "Dữ liệu permissions truyền lên phải là một mảng!",
+        });
+      }
+
+      // Validate: Nếu có gửi userIds thì bắt buộc phải là mảng
+      if (userIds && !Array.isArray(userIds)) {
+        return res.status(400).json({
+          message:
+            "Dữ liệu userIds truyền lên phải là một mảng các số nguyên (ID người dùng)!",
+        });
+      }
+
       // Đẩy việc cho Service xử lý
-      const result = await groupService.createGroup(name, permissions);
+      const result = await groupService.createGroup(name, permissions, userIds);
 
       // Trả về kết quả hoàn chỉnh cho khách
       res.status(201).json({

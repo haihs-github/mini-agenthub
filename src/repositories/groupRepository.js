@@ -13,6 +13,16 @@ class GroupRepository {
   async create(groupData) {
     return await prisma.group.create({
       data: groupData,
+      // Lấy kèm thông tin các thành viên vừa được add vào nhóm (chỉ lấy id, email, fullname)
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            fullname: true,
+          },
+        },
+      },
     });
   }
   // BKAV HaiHS :Lưu nhóm mới vào Database - end
