@@ -1,16 +1,14 @@
-require("dotenv").config();
-
 const { PrismaClient } = require("@prisma/client");
 const { PrismaPg } = require("@prisma/adapter-pg");
 const { Pool } = require("pg");
 const bcrypt = require("bcrypt");
+require("dotenv").config();
 
+// Khởi tạo cổng kết nối theo chuẩn Prisma 7
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-console.log("DATABASE_URL đang dùng:", process.env.DATABASE_URL);
 const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({ adapter }); // Truyền adapter vào đây
 
-// bkav HaiHS : tạo tài khoản admin mặc định - start
 async function main() {
   const adminEmail = "admin@agenthub.com";
   const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -43,9 +41,8 @@ async function main() {
     },
   });
 
-  console.log("Đã tạo tài khoản Admin mặc định:", admin.email);
+  console.log("Đã tạo tài khoản Admin thành công:", admin.email);
 }
-// bkav HaiHS : tạo tài khoản admin mặc định - end
 
 main()
   .catch((e) => {
