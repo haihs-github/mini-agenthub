@@ -16,7 +16,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  permissionMiddleware("USER_U"),
+  permissionMiddleware("USER_U", "GROUP_ADD_USER", "GROUP_DELETE_USER"),
   userController.updateUser,
 );
 
