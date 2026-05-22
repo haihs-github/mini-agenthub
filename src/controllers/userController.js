@@ -40,6 +40,38 @@ class UserController {
     }
   }
   // BKAV HaiHS : tạo người dùng mới - end
+
+  // BKAV HaiHS : cập nhật người dùng - start
+  async updateUser(req, res, next) {
+    try {
+      const { id } = req.params; // Lấy ID người dùng từ URL (ví dụ: /api/users/2)
+      const { fullname, email, role, groupIds } = req.body;
+
+      // Validate: Nếu có gửi groupIds thì bắt buộc phải là mảng
+      if (groupIds && !Array.isArray(groupIds)) {
+        return res.status(400).json({
+          message:
+            "Dữ liệu groupIds truyền lên bắt buộc phải là một mảng các số nguyên!",
+        });
+      }
+
+      // Đẩy việc xuống Service
+      const result = await userService.updateUser(id, {
+        fullname,
+        email,
+        role,
+        groupIds,
+      });
+
+      res.status(200).json({
+        message: "Cập nhật thông tin người dùng thành công!",
+        data: result,
+      });
+    } catch (error) {
+      next(error); // Đẩy lỗi ra errorHandler
+    }
+  }
+  // BKAV HaiHS : cập nhật người dùng - end
 }
 
 module.exports = new UserController();

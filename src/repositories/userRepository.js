@@ -46,6 +46,21 @@ class UserRepository {
     });
   }
   // BKAV HaiHS : Cập nhật mật khẩu mới vào DB - end
+
+  // BKAV HaiHS : Cập nhật thông tin người dùng - start
+  async update(id, updateData) {
+    return await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+      // Trả ra kèm theo danh sách các nhóm sau khi sửa để tiện hiển thị
+      include: {
+        groups: {
+          select: { id: true, name: true },
+        },
+      },
+    });
+  }
+  // BKAV HaiHS : Cập nhật thông tin người dùng - end
 }
 
 module.exports = new UserRepository();

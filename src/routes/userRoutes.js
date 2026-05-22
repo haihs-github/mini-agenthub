@@ -12,4 +12,12 @@ router.post(
   userController.createUser,
 );
 
+// API Cập nhật thông tin tài khoản
+router.put(
+  "/:id",
+  authMiddleware,
+  permissionMiddleware("USER_U"),
+  userController.updateUser,
+);
+
 module.exports = router;
