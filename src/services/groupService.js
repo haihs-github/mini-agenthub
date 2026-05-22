@@ -29,7 +29,8 @@ class GroupService {
       userId: parseInt(creatorId), // ID của người đang thao tác
       resourceType: "Group", // Loại tài nguyên
       resourceId: newGroup.id, // ID của Group vừa sinh ra trong DB
-      action: "GROUP_U", // Cấp quyền sửa/vận hành nhóm này
+      action:
+        "GROUP_C, GROUP_R, GROUP_U, GROUP_D, GROUP_ADD_USER, GROUP_DELETE_USER", // Cấp quyền sửa/vận hành nhóm này
     });
   }
   // BKAV HaiHS : sử lý tạo nhóm mới - end
