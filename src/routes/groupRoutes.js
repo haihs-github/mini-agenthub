@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const groupController = require("../controllers/groupController");
 const authMiddleware = require("../middlewares/authMiddleware");
+const checkACL = require("../middlewares/aclMiddleware");
 const permissionMiddleware = require("../middlewares/permissionMiddleware");
 
 // API Tạo nhóm: Phải Đăng nhập + Có quyền GROUP_C
@@ -16,7 +17,7 @@ router.post(
 router.put(
   "/:id",
   authMiddleware,
-  permissionMiddleware("GROUP_U"),
+  checkACL("GROUP_U"),
   groupController.updateGroup,
 );
 
