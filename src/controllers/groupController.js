@@ -5,6 +5,7 @@ class GroupController {
   async createGroup(req, res, next) {
     try {
       const { name, permissions, userIds } = req.body;
+      const creatorId = req.userId;
 
       // Kiểm tra dữ liệu đầu vào cơ bản
       if (!name) {
@@ -29,7 +30,12 @@ class GroupController {
       }
 
       // Đẩy việc cho Service xử lý
-      const result = await groupService.createGroup(name, permissions, userIds);
+      const result = await groupService.createGroup(
+        name,
+        permissions,
+        userIds,
+        creatorId,
+      );
 
       // Trả về kết quả hoàn chỉnh cho khách
       res.status(201).json({

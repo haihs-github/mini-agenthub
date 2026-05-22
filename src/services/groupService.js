@@ -1,8 +1,8 @@
 const groupRepository = require("../repositories/groupRepository");
-
+const aclRepository = require("../repositories/aclRepository");
 class GroupService {
   // BKAV HaiHS : sử lý tạo nhóm mới - start
-  async createGroup(name, permissions, userIds) {
+  async createGroup(name, permissions, userIds, creatorId) {
     // 1. Kiểm tra xem tên nhóm đã tồn tại chưa
     const existingGroup = await groupRepository.findByName(name);
     if (existingGroup) {
@@ -23,7 +23,14 @@ class GroupService {
     }
 
     // 4. Gọi Repo để lưu xuống Database
-    return await groupRepository.create(groupData);
+    const newGroup = await groupRepository.create(groupData);
+
+    await aclRepository.createACL({
+      userId: parseInt(creatorId), // ID của người đang thao tác
+      resourceType: "Group", // Loại tài nguyên
+      resourceId: newGroup.id, // ID của Group vừa sinh ra trong DB
+      action: "GROUP_U", // Cấp quyền sửa/vận hành nhóm này
+    });
   }
   // BKAV HaiHS : sử lý tạo nhóm mới - end
 
