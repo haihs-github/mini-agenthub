@@ -2,20 +2,28 @@ const groupRepository = require("../repositories/groupRepository");
 
 class GroupService {
   // BKAV HaiHS : sử lý tạo nhóm mới - start
-  async createGroup(name, permissions) {
-    // 1. Kiểm tra xem tên nhóm đã tồn tại chưa
+  async createGroup(name, permissions, userIds) {
+    // Kiểm tra xem tên nhóm đã tồn tại chưa
     const existingGroup = await groupRepository.findByName(name);
     if (existingGroup) {
       throw new Error("GROUP_ALREADY_EXISTS");
     }
 
-    // 2. Gọi Repo để lưu vào Database
-    const newGroup = await groupRepository.create({
+    // đóng gói groupdata
+    const groupData = {
       name: name,
-      permissions: permissions || [], // Nếu không truyền quyền thì mặc định là mảng rỗng
-    });
+      permissions: permissions || [],
+    };
 
-    return newGroup;
+    // gán user vào nhóm nếu có
+    if (userIds && Array.isArray(userIds) && userIds.length > 0) {
+      groupData.users = {
+        // Biến mảng số [1, 2] thành dạng [{ id: 1 }, { id: 2 }] theo đúng chuẩn Prisma
+        connect: userIds.map((id) => ({ id: parseInt(id) })),
+      };
+    }
+
+    return await groupRepository.create(groupData);
   }
   // BKAV HaiHS : sử lý tạo nhóm mới - end
 

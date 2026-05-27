@@ -1,28 +1,37 @@
 const groupService = require("../services/groupService");
 
 class GroupController {
-  // BKAV HaiHS : Xử lý tao nhóm mới - start
+  // BKAV HaiHS : Xử lý tạo nhóm mới - start
   async createGroup(req, res, next) {
     try {
-      const { name, permissions } = req.body;
+      // Lấy thêm userIds từ Body do Client gửi lên
+      const { name, permissions, userIds } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào cơ bản
+      // Kiểm tra dữ liệu đầu vào bắt buộc
       if (!name) {
         return res
           .status(400)
           .json({ message: "Bắt buộc phải nhập tên Nhóm (name)!" });
       }
 
-      // Đẩy việc cho Service xử lý
-      const result = await groupService.createGroup(name, permissions);
+      // Kiểm tra định dạng dữ liệu userIds nếu admin có truyền lên
+      if (userIds && !Array.isArray(userIds)) {
+        return res
+          .status(400)
+          .json({
+            message: "Dữ liệu userIds truyền lên bắt buộc phải là một mảng!",
+          });
+      }
 
-      // Trả về kết quả hoàn chỉnh cho khách
+      // Đẩy việc xuống tầng Service
+      const result = await groupService.createGroup(name, permissions, userIds);
+
       res.status(201).json({
-        message: "Tạo Nhóm thành công!",
+        message: "Tạo Nhóm mới và gán thành viên thành công!",
         data: result,
       });
     } catch (error) {
-      next(error); // Gửi lỗi sang tầng errorHandler gánh
+      next(error);
     }
   }
   // BKAV HaiHS : Xử lý tao nhóm mới - end

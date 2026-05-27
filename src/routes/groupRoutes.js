@@ -4,28 +4,31 @@ const groupController = require("../controllers/groupController");
 const authMiddleware = require("../middlewares/authMiddleware");
 const permissionMiddleware = require("../middlewares/permissionMiddleware");
 
-// API Tạo nhóm: Phải Đăng nhập + Có quyền GROUP_C
+// BKAV HaiHS : API Tạo nhóm: Phải Đăng nhập + Có quyền GROUP_C - start
 router.post(
   "/create",
   authMiddleware,
   permissionMiddleware("GROUP_C"),
   groupController.createGroup,
 );
+// BKAV HaiHS : API Tạo nhóm: Phải Đăng nhập + Có quyền GROUP_C - end
 
-// API Sửa quyền của nhóm (GROUP_U) - THÊM DÒNG NÀY:
+// BKAV HaiHS : API Sửa quyền của nhóm (GROUP_U) - start
 router.put(
   "/:id/permissions",
   authMiddleware,
   permissionMiddleware("GROUP_U"),
   groupController.updatePermissions,
 );
+// BKAV HaiHS : API Sửa quyền của nhóm (GROUP_U) - end
 
-// API Thêm nhiều thành viên vào nhóm (GROUP_ADD_USER):
+// BKAV HaiHS :API Thêm nhiều thành viên vào nhóm (GROUP_ADD_USER) - start
 router.post(
   "/:id/users",
   authMiddleware,
   permissionMiddleware("GROUP_ADD_USER"),
   groupController.addUsers,
 );
+// BKAV HaiHS :API Thêm nhiều thành viên vào nhóm (GROUP_ADD_USER) - end
 
 module.exports = router;
