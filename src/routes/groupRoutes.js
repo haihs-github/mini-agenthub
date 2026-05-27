@@ -31,4 +31,13 @@ router.post(
 );
 // BKAV HaiHS :API Thêm nhiều thành viên vào nhóm (GROUP_ADD_USER) - end
 
+// BKAV HaiHS : API Xóa nhóm (GROUP_D) - start
+router.delete(
+  "/:id",
+  authMiddleware,
+  permissionMiddleware("GROUP_D"),
+  groupController.deleteGroup,
+);
+// BKAV HaiHS : API Xóa nhóm (GROUP_D) - end
+
 module.exports = router;

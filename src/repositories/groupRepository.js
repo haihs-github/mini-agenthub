@@ -62,6 +62,14 @@ class GroupRepository {
     });
   }
   // BKAV HaiHS : Thêm người dùng vào nhóm - end
+
+  // BKAV HaiHS : Xóa nhóm - start
+  async delete(id) {
+    return await prisma.group.delete({
+      where: { id: parseInt(id) },
+    });
+  }
+  // BKAV HaiHS : Xóa nhóm - end
 }
 
 module.exports = new GroupRepository();

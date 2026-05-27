@@ -78,6 +78,23 @@ class GroupController {
     }
   }
   // BKAV HaiHS : xử lý thêm người dùng vào nhóm - end
+
+  // BKAV HaiHS : xử lý xóa nhóm - start
+  async deleteGroup(req, res, next) {
+    try {
+      const { id } = req.params; // Lấy ID nhóm cần xóa từ URL
+
+      // Giao việc cho Service xử lý logic nghiệp vụ
+      await groupService.deleteGroup(id);
+
+      res.status(200).json({
+        message: "Xóa Nhóm thành công!",
+      });
+    } catch (error) {
+      next(error); // Đẩy lỗi ra errorHandler
+    }
+  }
+  // BKAV HaiHS : xử lý xóa nhóm - end
 }
 
 module.exports = new GroupController();

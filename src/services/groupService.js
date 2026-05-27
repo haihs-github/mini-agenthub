@@ -76,6 +76,19 @@ class GroupService {
     return await groupRepository.addUsersToGroup(groupId, userIds);
   }
   // BKAV HaiHS : xử lý thêm người dùng vào nhóm - end
+
+  // BKAV HaiHS : xử lý xóa nhóm - start
+  async deleteGroup(groupId) {
+    // 1. Kiểm tra xem nhóm có tồn tại trong DB không
+    const group = await groupRepository.findById(groupId);
+    if (!group) {
+      throw new Error("GROUP_NOT_FOUND");
+    }
+
+    // 2. Tiến hành gọi Repo để xóa thẳng tay
+    return await groupRepository.delete(groupId);
+  }
+  // BKAV HaiHS : xử lý xóa nhóm - end
 }
 
 module.exports = new GroupService();
