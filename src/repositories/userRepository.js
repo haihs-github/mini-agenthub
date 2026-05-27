@@ -42,6 +42,19 @@ class UserRepository {
     });
   }
   // BKAV HaiHS : Cập nhật mật khẩu mới vào DB - end
+
+  // BKAV HaiHS : Tìm người dùng theo ID kèm theo nhóm và quyền của nhóm - start
+  async findByIdWithGroups(id) {
+    return await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        groups: {
+          select: { permissions: true },
+        },
+      },
+    });
+  }
+  // BKAV HaiHS : Tìm người dùng theo ID kèm theo nhóm và quyền của nhóm - end
 }
 
 module.exports = new UserRepository();
