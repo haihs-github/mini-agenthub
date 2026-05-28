@@ -27,9 +27,22 @@ model Group {
 
 // Bảng 3: Hội thoại (để quản lý chat)
 model Conversation {
-  id        Int      @id @default(autoincrement())
-  title     String
-  messages  Json     @default("[]") 
+  id        Int       @id @default(autoincrement())
+  title     String    @default("Cuộc hội thoại mới")
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// Bảng 4: tin nhắn để lưu tin nhắn yêu cầu của người dùng và phản hồi của AI 
+model Message {
+  id             Int          @id @default(autoincrement())
+  role           String       // "user" (người dùng hỏi) hoặc "assistant" (AI trả lời)
+  content        String       @db.Text
+  modelName      String?      // <--- DI CHUYỂN XUỐNG ĐÂY: Lưu chính xác model được dùng cho tin nhắn này
+  conversationId Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
 }
