@@ -40,4 +40,13 @@ router.put(
 );
 // BKAV HaiHS : API cập nhật người dùng - start
 
+// BKAV HaiHS : API xóa người dùng - start
+router.delete(
+  "/:id",
+  authMiddleware,
+  permissionMiddleware("USER_D"),
+  userController.deleteUser,
+);
+// BKAV HaiHS : API xóa người dùng - end
+
 module.exports = router;

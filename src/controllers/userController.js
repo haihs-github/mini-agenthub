@@ -97,6 +97,23 @@ class UserController {
     }
   }
   // BKAV HaiHS : cập nhật người dùng - end
+
+  // BKAV HaiHS : xóa người dùng - start
+  async deleteUser(req, res, next) {
+    try {
+      const { id } = req.params; // Lấy ID người dùng cần xóa từ URL
+
+      // Gọi tầng Service xử lý logic
+      await userService.deleteUser(id);
+
+      res.status(200).json({
+        message: "Xóa tài khoản người dùng thành công!",
+      });
+    } catch (error) {
+      next(error); // Gửi lỗi sang errorHandler xử lý tập trung
+    }
+  }
+  // BKAV HaiHS : xóa người dùng - end
 }
 
 module.exports = new UserController();

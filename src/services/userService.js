@@ -124,6 +124,19 @@ class UserService {
     return await userRepository.update(userId, updateData);
   }
   // BKAV HaiHS : cập nhật người dùng - end
+
+  // BKAV HaiHS : xóa người dùng - start
+  async deleteUser(userId) {
+    // 1. Kiểm tra xem người dùng có tồn tại trong DB không
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new Error("USER_NOT_FOUND");
+    }
+
+    // 2. Tiến hành gọi Repo để xóa thẳng tay khỏi hệ thống
+    return await userRepository.delete(userId);
+  }
+  // BKAV HaiHS : xóa người dùng - end
 }
 
 module.exports = new UserService();

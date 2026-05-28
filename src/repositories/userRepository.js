@@ -127,6 +127,14 @@ class UserRepository {
     });
   }
   // BKAV HaiHS : cập nhật thông tin người dùng - end
+
+  // BKAV HaiHS : xóa người dùng - start
+  async delete(id) {
+    return await prisma.user.delete({
+      where: { id: parseInt(id) }, // Ép kiểu về số nguyên Int để tránh lỗi hoại tử dữ liệu
+    });
+  }
+  // BKAV HaiHS : xóa người dùng - start
 }
 
 module.exports = new UserRepository();
