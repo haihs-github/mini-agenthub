@@ -1,0 +1,34 @@
+const express = require("express");
+const router = express.Router();
+const conversationController = require("../controllers/conversationController");
+const authMiddleware = require("../middlewares/authMiddleware");
+const permissionMiddleware = require("../middlewares/permissionMiddleware");
+
+// BKAV HaiHS : API Tạo phòng chat mới (CONV_C) - start
+router.post(
+  "/",
+  authMiddleware,
+  permissionMiddleware("CONV_C"),
+  conversationController.createConversation,
+);
+// BKAV HaiHS : API Tạo phòng chat mới (CONV_C) - end
+
+// BKAV HaiHS : API Lấy toàn bộ danh sách phòng chat của chính mình (CONV_R) - start
+router.get(
+  "/",
+  authMiddleware,
+  permissionMiddleware("CONV_R"),
+  conversationController.getMyConversations,
+);
+// BKAV HaiHS : API Lấy toàn bộ danh sách phòng chat của chính mình (CONV_R) - end
+
+// BKAV HaiHS : API Lấy chi tiết phòng chat kèm tin nhắn cũ của chính mình (CONV_R) - start
+router.get(
+  "/:id",
+  authMiddleware,
+  permissionMiddleware("CONV_R"),
+  conversationController.getConversationDetail,
+);
+// BKAV HaiHS : API Lấy chi tiết phòng chat kèm tin nhắn cũ của chính mình (CONV_R) - start
+
+module.exports = router;

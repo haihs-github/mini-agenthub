@@ -54,6 +54,15 @@ const errorHandler = (err, req, res, next) => {
       message: "Dữ liệu groupIds truyền lên phải ở dạng một mảng (Array)!",
     });
   }
+  // lỗi không tìm thấy cuộc hội thoại hoặc không có quyền truy cập
+  if (err.message === "CONVERSATION_NOT_FOUND") {
+    return res
+      .status(404)
+      .json({
+        message:
+          "Cuộc hội thoại không tồn tại hoặc bạn không có quyền truy cập!",
+      });
+  }
 
   // Các lỗi còn lại
   return res

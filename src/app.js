@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const groupRoutes = require("./routes/groupRoutes");
+const conversationRoutes = require("./routes/conversationRoutes");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/groups", groupRoutes);
+app.use("/api/conversations", conversationRoutes);
 
 // Middleware xử lý lỗi luôn phải nằm ở DƯỚI CÙNG
 app.use(errorHandler);
