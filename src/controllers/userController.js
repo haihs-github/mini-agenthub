@@ -27,15 +27,23 @@ class UserController {
   }
   // BKAV HaiHS : tạo người dùng mới - end
 
-  // BKAV HaiHS : controller nhận query param phân trang - start
-  async getUsers(req, res, next) {
+  // BKAV HaiHS : lấy danh sách người dùng phân trang - start
+  async getAllUsers(req, res, next) {
     try {
-      // Đón các tham số dạng query string trên URL
-      const { page, limit, search } = req.query;
+      // Lấy tham số dạng: /api/users?page=1&limit=10
+      let { page, limit } = req.query;
 
-      const result = await userService.getAllUsers({ page, limit, search });
+      // Ép kiểu về số nguyên và set mặc định
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 10;
 
-      // Trả ra cấu trúc chuẩn dữ liệu kèm object pagination chuyên nghiệp
+      if (page < 1) page = 1;
+      if (limit < 1) limit = 10;
+
+      // Gọi Service làm việc
+      const result = await userService.getAllUsers(page, limit);
+
+      // Trả response
       res.status(200).json({
         message: "Lấy danh sách người dùng thành công!",
         data: result.users,
@@ -45,7 +53,7 @@ class UserController {
       next(error);
     }
   }
-  // BKAV HaiHS : controller nhận query param phân trang - end
+  // BKAV HaiHS : lấy danh sách người dùng phân trang - end
 }
 
 module.exports = new UserController();

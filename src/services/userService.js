@@ -47,35 +47,25 @@ class UserService {
   // BKAV HaiHS : tạo người dùng mới - end
 
   // BKAV HaiHS : logic nghiệp vụ lấy danh sách phân trang - start
-  async getAllUsers({ page, limit, search }) {
-    // Đặt giá trị mặc định nếu client không truyền lên
-    const p = parseInt(page) || 1;
-    const l = parseInt(limit) || 10;
-    const skip = (p - 1) * l;
+  async getAllUsers(page, limit) {
+    // 1. Tính toán vị trí skip và take
+    const skip = (page - 1) * limit;
+    const take = limit;
 
-    // Gọi Repo xử lý kết nối DB
-    const { users, totalItems } = await userRepository.findAndCountAll({
-      skip,
-      take: l,
-      search,
-    });
+    // 2. Gọi Repo lấy dữ liệu sạch từ DB
+    const { users, total } = await userRepository.findAndCountAll(skip, take);
 
-    // Bảo mật: Loại bỏ trường password của toàn bộ danh sách trả về
-    const safeUsers = users.map((user) => {
-      const { password, ...safeUser } = user;
-      return safeUser;
-    });
+    // 3. Tính toán tổng số trang
+    const totalPages = Math.ceil(total / limit);
 
-    // Tính toán tổng số trang dựa trên số lượng item mỗi trang
-    const totalPages = Math.ceil(totalItems / l);
-
+    // 4. Trả về kết quả
     return {
-      users: safeUsers,
+      users,
       pagination: {
-        page: p,
-        limit: l,
-        totalItems: totalItems,
+        totalItems: total,
         totalPages: totalPages,
+        currentPage: page,
+        limit: limit,
       },
     };
   }

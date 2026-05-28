@@ -57,34 +57,31 @@ class UserRepository {
   // BKAV HaiHS : Tìm người dùng theo ID kèm theo nhóm và quyền của nhóm - end
 
   // BKAV HaiHS : tìm kiếm và phân trang người dùng - start
-  async findAndCountAll({ skip, take, search }) {
-    // Xây dựng điều kiện tìm kiếm động (Tìm theo Tên hoặc Email) Mode 'insensitive' là không phân biệt hoa thường
-    const where = search
-      ? {
-          OR: [
-            { fullname: { contains: search, mode: "insensitive" } },
-            { email: { contains: search, mode: "insensitive" } },
-          ],
-        }
-      : {};
-
-    // Chạy song song cả 2 tác vụ để tối ưu tốc độ Database
-    const [users, totalItems] = await prisma.$transaction([
+  async findAndCountAll(skip, take) {
+    // Chạy song song lệnh lấy danh sách và lệnh đếm tổng số user
+    const [users, total] = await Promise.all([
       prisma.user.findMany({
-        where: where,
-        skip: parseInt(skip),
-        take: parseInt(take),
-        include: {
+        skip: skip,
+        take: take,
+        orderBy: { id: "asc" }, // Sắp xếp ID tăng dần
+        select: {
+          id: true,
+          email: true,
+          fullname: true,
+          permissions: true,
+          // Kéo thêm thông tin các nhóm mà user này tham gia (nếu có)
           groups: {
-            select: { id: true, name: true }, // Lấy kèm thông tin nhóm để biết user thuộc nhóm nào
+            select: {
+              id: true,
+              name: true,
+            },
           },
         },
-        orderBy: { id: "asc" }, // Sắp xếp theo ID tăng dần
       }),
-      prisma.user.count({ where: where }), // Đếm tổng số bản ghi khớp điều kiện
+      prisma.user.count(),
     ]);
 
-    return { users, totalItems };
+    return { users, total };
   }
   // BKAV HaiHS : tìm kiếm và phân trang người dùng - end
 }

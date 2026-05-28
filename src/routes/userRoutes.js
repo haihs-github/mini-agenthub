@@ -9,7 +9,7 @@ router.get(
   "/",
   authMiddleware,
   permissionMiddleware("USER_R"),
-  userController.getUsers,
+  userController.getAllUsers,
 );
 // BKAV HaiHS : API lấy danh sách người dùng - end
 
